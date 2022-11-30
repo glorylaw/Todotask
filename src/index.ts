@@ -1,6 +1,6 @@
 import express from "express"
 import logger from "morgan"
-import todoRouter from "./routes/todoRoutes"
+import router from "./routes/todoRoutes"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
 dotenv.config()
@@ -13,7 +13,7 @@ mongoose.connect(process.env.DATABASE_URL!, ()=>{
 
 app.use(express.json())
 app.use(logger("dev"))
-app.use("/todo,",todoRouter )
+app.use("/todo",router)
 
 const Port = 4000
 

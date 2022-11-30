@@ -15,7 +15,7 @@ mongoose_1.default.connect(process.env.DATABASE_URL, () => {
 });
 app.use(express_1.default.json());
 app.use((0, morgan_1.default)("dev"));
-app.use("/todo,", todoRoutes_1.default);
+app.use("/todo", todoRoutes_1.default);
 const Port = 4000;
 app.listen(Port, () => {
     console.log(`Server running at http://localhost:${Port}`);

@@ -32,20 +32,20 @@ export const createTodo = async (req:Request,res:Response)=>{
         description,
         status
     })
-     res.status(200).json({
+     return res.status(200).json({
         status:"Todo created successfully",
-        data:createTodo
+        data:Todo
     })
 
   }
-  res.status(400).json({
+   return res.status(400).json({
     status:"failed"
   })
 }
    catch (err:any) {
     console.log(err.message);
     // console.log(err.stack)
-    res.status(500).json({
+ return   res.status(500).json({
       Error: "Internal server Error",
       route: "/todo/create",
     });
