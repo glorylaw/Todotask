@@ -12,51 +12,96 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTodo = void 0;
+exports.deleteTodo = exports.updateTodo = exports.createTodo = exports.getTodo = void 0;
 const todoModel_1 = __importDefault(require("../model/todoModel"));
-const createTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { description, status } = req.body;
-        const Todo = yield todoModel_1.default.findOne();
-        console.log(Todo);
-        if (Todo) {
-            const createTodo = yield todoModel_1.default.create({
-                description,
-                status
-            });
-            return res.status(201).json({
-                message: "Todo created successfully",
-                createTodo,
-            });
-        }
+        const todo = yield todoModel_1.default.find();
+        res.status(200).json({
+            todo
+        });
     }
     catch (err) {
         console.log(err.message);
         // console.log(err.stack)
         res.status(500).json({
             Error: "Internal server Error",
-            route: "/todo/create-todo",
+            route: "/todo/get-todo",
+        });
+    }
+});
+exports.getTodo = getTodo;
+const createTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { description, status } = req.body;
+        const Todo = yield todoModel_1.default.find();
+        console.log(Todo);
+        if (Todo) {
+            const createTodo = yield todoModel_1.default.create({
+                description,
+                status
+            });
+            res.status(200).json({
+                status: "Todo created successfully",
+                data: createTodo
+            });
+        }
+        res.status(400).json({
+            status: "failed"
+        });
+    }
+    catch (err) {
+        console.log(err.message);
+        // console.log(err.stack)
+        res.status(500).json({
+            Error: "Internal server Error",
+            route: "/todo/create",
         });
     }
 });
 exports.createTodo = createTodo;
-// router.get('/add/todo',(req,res)=>{
-//     const {todo}=req.body;
-//     const newTodo=new Todo_model({todo,email_:req.user.email,done:"0"})
-//     if(todo==""){
-//         res.redirect('/')
-//     }
-//     newTodo.save()
-//     .then(()=>{
-//         console.log("done")
-//         res.redirect('/')
-//     })
-//     .catch(err=>console.log(err))
-// })
-// export const createTodo = async (req:Request,res:Response)=>{
-// try {
-//    const {todo} = req.body
-//     const newTodo = new TodoInstance({description,status:})
-// } catch (error) {
-// }
-// }
+const updateTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const { description, status } = req.body;
+        const updatetodo = yield todoModel_1.default.findOne({ "_id": id });
+        if (updatetodo) {
+            const todo = yield todoModel_1.default.updateOne({ "_id": id }, {
+                description, status
+            });
+            return res.status(200).json({
+                status: 'updated successfully',
+                data: todo
+            });
+        }
+        return res.status(400).json({
+            message: "unidentified data"
+        });
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: 'internal server error',
+            routes: 'todo/update-todo/:id'
+        });
+    }
+});
+exports.updateTodo = updateTodo;
+const deleteTodo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const removedtodo = yield todoModel_1.default.findOneAndDelete({ "_id": id });
+        return res.status(200).json({
+            message: "deleted successfully"
+        });
+        return res.status(400).json({
+            message: "unidentified data"
+        });
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: 'internal server error',
+            routes: 'todo/remove-todo/:id'
+        });
+    }
+});
+exports.deleteTodo = deleteTodo;
